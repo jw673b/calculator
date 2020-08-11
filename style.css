@@ -1,0 +1,54 @@
+
+#calculatorBody {
+display:grid;
+margin:auto;
+height:600px;
+width:400px;
+text-align: center;
+background-color:slategrey;
+border-style:solid;
+border-radius:25px;
+}
+
+#inputDisplay {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100px;
+    width:auto;
+}
+
+#inputTextBox {
+width:350px;
+height:50px;
+font-size:24px;
+border-radius:15px;
+}
+    
+#inputs {
+    display: grid;
+    height:500px;
+    width:auto;
+    grid-template-rows:repeat(5, 1fr);
+    grid-template-columns:repeat(4, 1fr);
+    grid-template-areas:
+    "exponent sign percent divide"
+    "button7 button8 button9 multiply"
+    "button4 button5 button6 minus"
+    "button1 button2 button3 plus"
+    "button0 button0 point equals";
+}
+
+.inputBtn, .numBtn, .signBtn, .equalsBtn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-style:solid;
+    border-color:black;
+    border-radius:15px;
+    margin:12px;
+    font-size: 18px;
+    background-color:white;
+    color:black;
+    opacity:100%;
+}
