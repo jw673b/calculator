@@ -11,7 +11,7 @@ for (let i=0;i<10;i++) {
 }
 //Code to intialize calculator
 const startCalc = function() {
-    const buttons = document.querySelectorAll(".inputBtn, .numBtn, .equalsBtn, .signBtn");
+    const buttons = document.querySelectorAll(".clearBtn, .inputBtn, .numBtn, .equalsBtn, .signBtn");
     const btnsArray = Array.from(buttons);
     const numBtns = document.querySelectorAll(".numBtn");
     const numBtnsArray = Array.from(numBtns);
@@ -19,6 +19,7 @@ const startCalc = function() {
     const inputBtnsArray = Array.from(inputBtns);
     const equalsBtn = document.querySelector(".equalsBtn");
     const signBtn = document.querySelector(".signBtn");
+    const clearBtn = document.querySelector("clearBtn");
     btnsArray.forEach(btn => {
         btn.style.gridArea =`${btn.id}`;
     });
@@ -79,30 +80,33 @@ function changeSigns() {
 }
 //evaluate the calculator inputs
 function eval() {
-    let expArr = inputTextBox.value.replace(" ^ ","^").split(/ ([+-x÷]) /g);
+    let expArr = inputTextBox.value.replace(/ \^ /g,"^").split(/( [+-x÷] )/g);
     evalPercents(expArr);
-    console.log(expArr);
     evalExponents(expArr);
-    console.log(expArr);
+    expArr = expArr.join("");
+    evalMult(expArr);
 }
-function evalExponents(expArr) {
-    for (let i=0;i<expArr.length;i++) {
-        let val = expArr[i];
-        if (val.indexOf("^") !== -1) {
-            let valArr = val.split("^");
-            let num = 0;
-            let exp;
-            for (i=valArr.length-1;i>0;i--) {
-                exp = valArr[i];
-                num === 0 ? 
-                    num = valArr[i-1]:
-                    num = num;
-                num = num**exp;
-            }
-            expArr[i] = num;
+//evaluates multiplication and division
+function evalMult(Arr) {
+    Arr = Arr.replace(/\s/g,"").split(/([+-])/);
+    for (let i=0;i<Arr.length;i++) {
+        if (Arr[i].indexOf("x") !== -1 || Arr[i].indexOf("÷") !== -1) {
+            let valArr = Arr[i].split(/([÷x])/);
+            //continue here - valArr is an array of the sections that can be condensed to 1 number
         } else {}
     }
 }
+//evaluates exponents
+function evalExponents(expArr) {
+    for (let i=0;i<expArr.length;i++) {
+        let val = expArr[i].toString();
+        if (val.indexOf("^") !== -1) {
+            let valArr = val.split("^").reverse();
+            expArr[i] = valArr.reduce((exp,base) => {return base**exp});
+        } else {}
+    }
+}
+// evaluates percentages
 function evalPercents(expArr) {
     for (let i=0;i<expArr.length;i++) {
         let val = expArr[i];
