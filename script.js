@@ -84,17 +84,62 @@ function eval() {
     evalPercents(expArr);
     evalExponents(expArr);
     expArr = expArr.join("");
-    evalMult(expArr);
+    expArr = evalMult(expArr);
+    console.log(expArr);
+    expArr = evalAdd(expArr);
+    console.log(expArr);
+}
+//evaluates addition and subtraction
+function evalAdd(expArr) {
+    for (let i=0;i<expArr.length;i+=2) {
+        expArr[i] = Number(expArr[i]);
+    }
+    let returnVal = "na";
+    for (let n=1;n<expArr.length-1;n+=2) {
+        let val1 = expArr[0];
+        let val2 = expArr[n+1];
+        let operator = expArr[n];
+        if (operator === "+" && returnVal === "na") {
+            returnVal = val1+val2;
+        } else if (operator === "-" && returnVal === "na") {
+            returnVal = val1-val2;
+        } else if (operator === "+") {
+            val1 = returnVal;
+            returnVal = val1+val2;
+        } else if (operator === "-") {
+            val1 = returnVal;
+            returnVal = val1-val2;
+        }
+    }
+    return returnVal;
 }
 //evaluates multiplication and division
-function evalMult(Arr) {
-    Arr = Arr.replace(/\s/g,"").split(/([+-])/);
-    for (let i=0;i<Arr.length;i++) {
-        if (Arr[i].indexOf("x") !== -1 || Arr[i].indexOf("÷") !== -1) {
-            let valArr = Arr[i].split(/([÷x])/);
-            //continue here - valArr is an array of the sections that can be condensed to 1 number
+function evalMult(expArr) {
+    expArr = expArr.replace(/\s/g,"").split(/([+-])/);
+    for (let i=0;i<expArr.length;i++) {
+        if (expArr[i].indexOf("x") !== -1 || expArr[i].indexOf("÷") !== -1) {
+            let valArr = expArr[i].split(/([÷x])/);
+            let returnVal = "na";
+            for (let n=1;n<valArr.length-1;n+=2) {
+                let val1 = valArr[0];
+                let val2 = valArr[n+1];
+                let operator = valArr[n];
+                if (operator === "÷" && returnVal === "na") {
+                    returnVal = val1/val2;
+                } else if (operator === "x" && returnVal === "na") {
+                    returnVal = val1*val2;
+                } else if (operator === "÷") {
+                    val1 = returnVal;
+                    returnVal = val1/val2;
+                } else if (operator === "x") {
+                    val1 = returnVal;
+                    returnVal = val1*val2;
+                }
+            }
+            expArr[i] = returnVal;
         } else {}
     }
+    return expArr;
 }
 //evaluates exponents
 function evalExponents(expArr) {
