@@ -18,16 +18,14 @@ const startCalc = function() {
     const inputBtns = document.querySelectorAll(".inputBtn");
     const inputBtnsArray = Array.from(inputBtns);
     const equalsBtn = document.querySelector(".equalsBtn");
-    const signBtn = document.querySelector(".signBtn");
-    const clearBtn = document.querySelector("clearBtn");
+    const clearBtn = document.querySelector(".clearBtn");
     btnsArray.forEach(btn => {
         btn.style.gridArea =`${btn.id}`;
     });
     addArrayListener(numBtnsArray, addInput);
     addArrayListener(inputBtnsArray, addInput);
     equalsBtn.addEventListener('click',eval);
-    //update code for changeSigns to allow for negative numbers
-    //signBtn.addEventListener('click', changeSigns);
+    clearBtn.addEventListener('click',clearCalc);
 }
 //code to add event listener to all nodes in an array
 function addArrayListener(array, func) {
@@ -72,12 +70,6 @@ function checkPrevNum() {
         return subStr.split("");
     }
 }
-//change number negative or positive - pending completion
-function changeSigns() {
-    if (checkPrevInput(inputTextBox.value[inputTextBox.value.length - 1],["%",0,1,2,3,4,5,6,7,8,9])) {
-        console.log(inputTextBox.value.lastIndexOf(" "));
-    }
-}
 //evaluate the calculator inputs
 function eval() {
     let expArr = inputTextBox.value.replace(/ \^ /g,"^").split(/( [+-x÷] )/g);
@@ -85,32 +77,51 @@ function eval() {
     evalExponents(expArr);
     expArr = expArr.join("");
     expArr = evalMult(expArr);
-    console.log(expArr);
     expArr = evalAdd(expArr);
-    console.log(expArr);
+    expArr = roundArrVal(expArr);
+    inputTextBox.value = expArr;
+}
+function clearCalc() {
+    inputTextBox.value = "";
+}
+function roundArrVal(expArr) {
+    expArr = expArr[0] + "";
+    console.log(typeof expArr);
+    if (expArr.indexOf(".") === -1) {
+        return expArr;
+    } else if (expArr.length - expArr.indexOf(".") === 2) {
+        return Number(expArr).toFixed(1);
+    } else {
+        return Number(expArr).toFixed(2);
+    }
 }
 //evaluates addition and subtraction
 function evalAdd(expArr) {
-    for (let i=0;i<expArr.length;i+=2) {
-        expArr[i] = Number(expArr[i]);
-    }
-    let returnVal = "na";
-    for (let n=1;n<expArr.length-1;n+=2) {
-        let val1 = expArr[0];
-        let val2 = expArr[n+1];
-        let operator = expArr[n];
-        if (operator === "+" && returnVal === "na") {
-            returnVal = val1+val2;
-        } else if (operator === "-" && returnVal === "na") {
-            returnVal = val1-val2;
-        } else if (operator === "+") {
-            val1 = returnVal;
-            returnVal = val1+val2;
-        } else if (operator === "-") {
-            val1 = returnVal;
-            returnVal = val1-val2;
+    let returnVal = "not calculated";
+    if (expArr.length > 1) {
+        for (let i=0;i<expArr.length;i+=2) {
+            expArr[i] = Number(expArr[i]);
         }
+        for (let n=1;n<expArr.length-1;n+=2) {
+            let val1 = expArr[0];
+            let val2 = expArr[n+1];
+            let operator = expArr[n];
+            if (operator === "+" && returnVal === "not calculated") {
+                returnVal = val1+val2;
+            } else if (operator === "-" && returnVal === "not calculated") {
+                returnVal = val1-val2;
+            } else if (operator === "+") {
+                val1 = returnVal;
+                returnVal = val1+val2;
+            } else if (operator === "-") {
+                val1 = returnVal;
+                returnVal = val1-val2;
+            }
+        }
+    } else {
+        returnVal = expArr;
     }
+    console.log(returnVal);
     return returnVal;
 }
 //evaluates multiplication and division
@@ -119,16 +130,24 @@ function evalMult(expArr) {
     for (let i=0;i<expArr.length;i++) {
         if (expArr[i].indexOf("x") !== -1 || expArr[i].indexOf("÷") !== -1) {
             let valArr = expArr[i].split(/([÷x])/);
-            let returnVal = "na";
+            let returnVal = "not calculated";
             for (let n=1;n<valArr.length-1;n+=2) {
                 let val1 = valArr[0];
                 let val2 = valArr[n+1];
                 let operator = valArr[n];
-                if (operator === "÷" && returnVal === "na") {
+                if (operator === "÷" && returnVal === "not calculated") {
+                    if (val2 == 0) {
+                        inputTextBox.value = "You can't divide by 0 silly";
+                        break;
+                    }
                     returnVal = val1/val2;
-                } else if (operator === "x" && returnVal === "na") {
+                } else if (operator === "x" && returnVal === "not calculated") {
                     returnVal = val1*val2;
                 } else if (operator === "÷") {
+                    if (val2 == 0) {
+                        inputTextBox.value = "You can't divide by 0 silly";
+                        break;
+                    }
                     val1 = returnVal;
                     returnVal = val1/val2;
                 } else if (operator === "x") {

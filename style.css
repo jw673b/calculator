@@ -32,11 +32,11 @@ border-radius:15px;
     grid-template-rows:repeat(5, 1fr);
     grid-template-columns:repeat(4, 1fr);
     grid-template-areas:
-    "exponent sign percent divide"
+    "clear exponent percent divide"
     "button7 button8 button9 multiply"
     "button4 button5 button6 minus"
     "button1 button2 button3 plus"
-    "clear button0 point equals";
+    "button0 button0 point equals";
 }
 
 .inputBtn, .numBtn, .signBtn, .equalsBtn, .clearBtn{
@@ -51,4 +51,15 @@ border-radius:15px;
     background-color:white;
     color:black;
     opacity:100%;
+}
+.inputBtn:hover, .numBtn:hover, .signBtn:hover, .equalsBtn:hover, .clearBtn:hover {
+    transform: scale(1.1);
+    border-color: rgba(6, 16, 92, 0.728);
+    outline-style: none;
+}
+.inputBtn:active, .numBtn:active, .signBtn:active, .equalsBtn:active, .clearBtn:active {
+    transform: scale(1.1);
+    border-color: rgba(6, 16, 92, 0.728);
+    outline-style: none;
+    background-color: oldlace;
 }
