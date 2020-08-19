@@ -33,6 +33,13 @@ function addArrayListener(array, func) {
         btn.addEventListener("click", func);
     });
 }
+//adds keyboard support
+window.addEventListener('keydown', keyInput);
+function keyInput(e) {
+    console.log(e.key);
+    if (e.key === "Backspace") {
+    }
+}
 //adds elements to the calculator textbox (allows you to write 2 + 2)
 function addInput(e) {
     const val = inputTextBox.value;
@@ -73,27 +80,55 @@ function checkPrevNum() {
 //evaluate the calculator inputs
 function eval() {
     let expArr = inputTextBox.value.replace(/ \^ /g,"^").split(/( [+-x÷] )/g);
+    let lastVal = expArr[expArr.length - 1];
+    if (lastVal === "" || lastVal[lastVal.length-1] === "^") {
+        return;
+    }
     evalPercents(expArr);
     evalExponents(expArr);
+    console.log(expArr);
     expArr = expArr.join("");
     expArr = evalMult(expArr);
     expArr = evalAdd(expArr);
-    expArr = roundArrVal(expArr);
+    console.log(`prereturn ${expArr}`);
+    console.log(`prereturn ${typeof expArr}`);
     inputTextBox.value = expArr;
+    console.log(`postreturn ${expArr}`);
+    console.log(`postreturn ${typeof expArr}`);
+    inputTextBox.value = returnVal(expArr);
+}
+//rounds final value if relevant
+function returnVal(expArr) {
+    if (typeof expArr == "number") {
+        expArr = expArr + "";
+        if (expArr.indexOf(".") === -1) {
+            return expArr;
+        } else if (expArr.length - expArr.indexOf(".") >= 5) {
+            return expArr.toFixed(4);
+        } else if (expArr.length - expArr.indexOf(".") === 4) {
+            return expArr.toFixed(3);
+        } else if (expArr.length - expArr.indexOf(".") === 3) {
+            return expArr.toFixed(2);
+        } else if (expArr.length - expArr.indexOf(".") === 2) {
+            return expArr.toFixed(1);
+        } else {}
+    } else if (typeof expArr == "object") {
+        expArr = expArr[0] + "";
+        if (expArr.indexOf(".") === -1) {
+            return expArr;
+        } else if (expArr.length - expArr.indexOf(".") >= 5) {
+            return Number(expArr).toFixed(4);
+        } else if (expArr.length - expArr.indexOf(".") === 4) {
+            return Number(expArr).toFixed(3);
+        } else if (expArr.length - expArr.indexOf(".") === 3) {
+            return Number(expArr).toFixed(2);
+        } else if (expArr.length - expArr.indexOf(".") === 2) {
+            return Number(expArr).toFixed(1);
+        } else {}
+    }
 }
 function clearCalc() {
     inputTextBox.value = "";
-}
-function roundArrVal(expArr) {
-    expArr = expArr[0] + "";
-    console.log(typeof expArr);
-    if (expArr.indexOf(".") === -1) {
-        return expArr;
-    } else if (expArr.length - expArr.indexOf(".") === 2) {
-        return Number(expArr).toFixed(1);
-    } else {
-        return Number(expArr).toFixed(2);
-    }
 }
 //evaluates addition and subtraction
 function evalAdd(expArr) {
@@ -121,7 +156,7 @@ function evalAdd(expArr) {
     } else {
         returnVal = expArr;
     }
-    console.log(returnVal);
+    console.log(typeof returnVal);
     return returnVal;
 }
 //evaluates multiplication and division
