@@ -1,5 +1,6 @@
 const inputs = document.querySelector("#inputs");
 const inputTextBox = document.querySelector("#inputTextBox");
+const symbs = ["&","+","-","÷","x","^"];
 //creates num buttons
 for (let i=0;i<10;i++) {
     const btn = document.createElement("div")
@@ -34,10 +35,43 @@ function addArrayListener(array, func) {
     });
 }
 //adds keyboard support
+window.addEventListener('keydown', backspace);
 window.addEventListener('keydown', keyInput);
+//key input to backspace  
+function backspace(e) {
+    if (e.key === "Backspace" 
+    && inputTextBox.value[inputTextBox.value.length - 1] === " ") {
+        inputTextBox.value = inputTextBox.value.substring(0,inputTextBox.value.length - 3);
+    } else if (e.key === "Backspace") {
+        inputTextBox.value = inputTextBox.value.substring(0,inputTextBox.value.length - 1);
+    }
+}
+//key inputs
 function keyInput(e) {
-    console.log(e.key);
-    if (e.key === "Backspace") {
+    const val = inputTextBox.value;
+    const keys = ["/","+","-","x","^","%",".","0","1","2","3","4","5","6","7","8","9"];
+    const inputs = [" ÷ "," + "," - "," x "," ^ ","%",".","0","1","2","3","4","5","6","7","8","9"];
+    if (val === "" && checkKeys(e.key,keys.slice(0,8)) ||
+        checkPrevInput(val[val.length-2],symbs) && checkKeys(e.key,keys.slice(0,7)) ||
+        val[val.length-1] === "%" && checkPrevInput(e.key,keys.slice(6)) ||
+        checkPrevInput(e.key, checkPrevNum()) && checkPrevInput(e.key,["%","."])
+    ) {} 
+    else if (keys.indexOf(e.key) > -1) {
+        inputTextBox.value += inputs[keys.indexOf(e.key)];
+    }
+}
+function keyToInput(key) {
+    const keys = ["/","+","-","x","^"];
+    const inputs = [" ÷ "," + "," - "," x "," ^ "];
+    if (keys.indexOf(key) > -1) {
+        return inputs[keys.indexOf(key)];
+    }
+}
+function checkKeys(key,array) {
+    if (array.indexOf(key) > -1) {
+        return true;
+    } else {
+        return false;
     }
 }
 //adds elements to the calculator textbox (allows you to write 2 + 2)
@@ -46,14 +80,11 @@ function addInput(e) {
     //checks if the first button pressed is not a number button
     if (val === "" && e.target.className !== "numBtn" ||
      //checks if the last input was a math function and the next button is another math function
-        checkPrevInput(val[val.length-2],["&","+","-","÷","x","^"]) 
-        && e.target.className === "inputBtn" ||
+        checkPrevInput(val[val.length-2],symbs) && e.target.className === "inputBtn" ||
     //prevents illogical use of %
-        val[val.length-1] === "%" &&
-        checkPrevInput(e.target.innerHTML,["%",".",0,1,2,3,4,5,6,7,8,9]) ||
+        val[val.length-1] === "%" && checkPrevInput(e.target.innerHTML,["%",".",0,1,2,3,4,5,6,7,8,9]) ||
     //prevents illogical use of .
-        checkPrevInput(e.target.innerHTML, checkPrevNum()) &&
-        checkPrevInput(e.target.innerHTML,["%","."])
+        checkPrevInput(e.target.innerHTML, checkPrevNum()) && checkPrevInput(e.target.innerHTML,["%","."])
         ) {/*code if true*/}
     else {
         inputTextBox.value += e.target.innerHTML;
