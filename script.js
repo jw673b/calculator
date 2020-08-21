@@ -37,6 +37,13 @@ function addArrayListener(array, func) {
 //adds keyboard support
 window.addEventListener('keydown', backspace);
 window.addEventListener('keydown', keyInput);
+window.addEventListener('keydown', equals);
+//key input to solve expression
+function equals(e) {
+    if (e.key === "Enter") {
+        eval();
+    }
+}
 //key input to backspace  
 function backspace(e) {
     if (e.key === "Backspace" 
@@ -120,13 +127,13 @@ function eval() {
     console.log(expArr);
     expArr = expArr.join("");
     expArr = evalMult(expArr);
-    expArr = evalAdd(expArr);
+    expArr = [evalAdd(expArr)];
+    inputTextBox.value = expArr;
     console.log(`prereturn ${expArr}`);
     console.log(`prereturn ${typeof expArr}`);
-    inputTextBox.value = expArr;
+    inputTextBox.value = returnVal(expArr);
     console.log(`postreturn ${expArr}`);
     console.log(`postreturn ${typeof expArr}`);
-    inputTextBox.value = returnVal(expArr);
 }
 //rounds final value if relevant
 function returnVal(expArr) {
